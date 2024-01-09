@@ -1,0 +1,25 @@
+{
+  "name": "query-authz-ext",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Query data from the Auth0 Authorization Extension",
+  "main": "index.js",
+  "bin": {
+    "ae-tool": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nicolas Sabena",
+  "license": "ISC",
+  "dependencies": {
+    "auth0": "^4.2.0",
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "export-to-csv": "^1.2. 1",
+    "got": "^13.0.0",
+    "ndjson": "^2.0.0",
+    "node-gzip": "^1.1.2"
+  }
+}
