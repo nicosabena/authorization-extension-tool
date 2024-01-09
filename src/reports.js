@@ -65,6 +65,13 @@ const Projections = {
     ...Projections.groups(group),
     direct_members: group.members.map((member) => member).join(", ")
   }),
+  groupsWithMembersFlat: (group, rawData) =>
+    group.allMembers.map((member) => ({
+      ...Projections.groups(group),
+      is_direct_member: group.members.includes(member),
+      member_id: member,
+      ...userInfo(member, rawData.usersMap)
+    })),
   groupsWithMissingMembers: (group) => ({
     ...Projections.groups(group),
     missing_members: group.missingMembers.map((member) => member).join(", ")
