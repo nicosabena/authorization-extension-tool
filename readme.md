@@ -2,23 +2,27 @@
 
 This CLI program takes data from the Authorization Extension (groups, roles, permissions), combines it with data obtained from the tenant (users, applications) and generates different reports based on the data.
 
+## Prerequisites
+
+1. **NodeJS**. Get the LTS version from https://nodejs.org/en/download
+
 ## Setup
 
-1. Install NodeJS
-2. Clone the repository to a local folder using `git` or download a copy directly from GitHub.
+1. Clone the repository to a local folder using `git` or download a copy directly from GitHub.
 ```
 git clone https://github.com/nicosabena/authorization-extension-tool
 ```
-3. Install the required packages:
+2. Install the required packages:
 ```
+cd authorization-extension-tool
 npm install
 ```
-1. Make the tool accessible globally:
+3. Make the tool (a CLI named `ae-tool`) accessible globally:
 ```
 npm install -g
 ```
 
-1. The command line tool can now be accessed using `ae-tool`. E.g. to obtain help:
+4. The command line tool can now be accessed using `ae-tool`. E.g. to obtain help:
 
 ```
 ae-tool help
@@ -26,10 +30,12 @@ ae-tool help
 
 ## Download data from the tenant
 The tool relies on data exported from the tenant that has the Authorization Extension installed to analyze it. To obtain this data automatically:
+
 1. Create a M2M application in the tenant where the Authorization Extension is installed, and assign permissions for:
    1. Auth0 Management API: authorize the scopes `read:users` and `read:applications` so that the code can read users and applications.
    2. `auth0-authorization-extension-api`: authorize the scope `read:configuration` so that the code can read the full configuration for the Authorization Extension.
-2. In a working folder (e.g. named as the tenant) create a `.env` file (using `.env.example` as a template) and configure the all the values.
+
+2. In a working folder (e.g. `~/ae-tool-working-folder/{tenant}) create a `.env` file (using `.env.example` as a template) and configure the all the values.
    For `CLIENT_ID` and `CLIENT_SECRET`, use the values for the application created in step #1.
 
 To download the data from the tenant into the working folder:
@@ -85,7 +91,4 @@ ae-tool report roles-without-permissions > roles-without-permissions.csv
 ae-tool report groups-and-members --flat >groups-and-members.csv
 ae-tool report groups-with-users-not-found --flat >groups-with-users-not-found.csv
 ae-tool report groups-and-roles --flat >groups-and-roles.csv
-```
-
-
 ```
