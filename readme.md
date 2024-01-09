@@ -81,14 +81,19 @@ You can get a list of report types by typing:
 ae-tool report --help
 ```
 
-Since all reports are in `.csv` format, it will usually make sense to send the output to a `.csv` file.
+Since all reports are in `.csv` format, it will usually make sense to send the output to a `.csv` file:
 
 ```
 ae-tool report users > users.csv
+ae-tool report empty-groups > empty-groups.csv
 ae-tool report groups > groups.csv
-ae-tool report roles --flat >roles-and-permissions.csv
+ae-tool report roles --flat >roles-and-permissions-flat.csv
+ae-tool report roles > roles-and-permissions.csv
 ae-tool report roles-without-permissions > roles-without-permissions.csv
+ae-tool report groups > groups.csv
 ae-tool report groups-and-members --flat >groups-and-members.csv
 ae-tool report groups-with-users-not-found --flat >groups-with-users-not-found.csv
-ae-tool report groups-and-roles --flat >groups-and-roles.csv
+ae-tool report groups-and-roles --flat >groups-and-roles-flat.csv
+ae-tool report groups-and-roles >groups-and-roles.csv
+ae-tool report permissions >permissions.csv
 ```
