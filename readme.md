@@ -98,5 +98,6 @@ ae-tool report groups-with-users-not-found --flat >groups-with-users-not-found.c
 ae-tool report groups-and-roles --flat >groups-and-roles-flat.csv
 ae-tool report groups-and-roles >groups-and-roles.csv
 ae-tool report permissions >permissions.csv
-ae-tool report groups-with-inactive-members --flat --cutoff 2023-10-01 >groups-with-inactive-members-flat.csv
+ae-tool report groups-with-inactive-members --flat --cutoff 2023-10-01 >groups-with-inactive-members-since-2023-10-01-flat.csv
+ae-tool report nested-groups --flat >nested-groups-flat.csv
 ```

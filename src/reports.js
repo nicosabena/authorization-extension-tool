@@ -100,7 +100,16 @@ const Projections = {
       member_id: member,
       ...userInfo(member, rawData.usersMap)
     })),
-  users: (user, rawData) => ({
+  groupsWithNestedGroups: (group) => ({
+    ...Projections.groups(group),
+    nested_groups: group.nested.map((nestedGroup) => nestedGroup.name)
+  }),
+  groupsWithNestedGroupsFlat: (group) =>
+    group.nested.map((nestedGroup) => ({
+      ...Projections.groups(group),
+      nested_group_name: nestedGroup.name
+    })),
+  users: (user) => ({
     ...user
   })
 };
@@ -162,6 +171,13 @@ const reportTypes = {
     flatProjection: Projections.groupsWithMembersFlat,
     data: ({ groups }, options) =>
       groups.filter(options.groupFilter).filter((group) => group.allMembers.length > 0)
+  },
+  "nested-groups": {
+    description: "groups with their nested groups",
+    projection: Projections.groupsWithNestedGroups,
+    flatProjection: Projections.groupsWithNestedGroupsFlat,
+    data: ({ groups }, options) =>
+      groups.filter(options.groupFilter).filter((group) => group.nested.length > 0)
   },
   users: {
     description: "Users",
