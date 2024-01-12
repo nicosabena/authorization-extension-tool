@@ -1,4 +1,5 @@
 import { outputCsv } from "./csvOutput.js";
+import { getInactiveGroupsAndUsers } from "./inactiveUsers.js";
 import { initializeData } from "./initializeData.js";
 import { logger } from "./logger.js";
 
@@ -84,6 +85,21 @@ const Projections = {
       member_id: member,
       ...userInfo(member, rawData.usersMap)
     })),
+  groupsWithInactiveMembers: (group) => ({
+    group_id: group._id,
+    group_name: group.name,
+    group_description: group.description,
+    inactive_members: group.inactiveMembers.map((member) => member).join(", ")
+  }),
+  groupsWithInactiveMembersFlat: (group, rawData) =>
+    group.inactiveMembers.map((member) => ({
+      group_id: group._id,
+      group_name: group.name,
+      group_description: group.description,
+      inactive_members_count: group.inactiveMembers.length,
+      member_id: member,
+      ...userInfo(member, rawData.usersMap)
+    })),
   users: (user, rawData) => ({
     ...user
   })
@@ -164,18 +180,34 @@ const reportTypes = {
           missingMembers: group.allMembers.filter((member_id) => !usersMap[member_id])
         }))
         .filter((group) => group.missingMembers.length > 0)
+  },
+  "groups-with-inactive-members": {
+    description:
+      "Groups and members where users haven't log in since the cutoff date. Only direct group members are included.",
+    projection: Projections.groupsWithInactiveMembers,
+    flatProjection: Projections.groupsWithInactiveMembersFlat,
+    data: getInactiveGroupsAndUsers
   }
 };
 
 export const reportTypesList = Object.keys(reportTypes);
 
-export async function generateReport(reportType, options = {}) {
+export async function generateReport(reportType, options = {}, command) {
   const rawData = await initializeData();
   const flat = options.flat;
   const report = reportTypes[reportType];
 
   options.groupFilter = (group) => !options.group || group.name === options.group;
-  const data = report.data(rawData, options);
+  let data;
+  try {
+    data = report.data(rawData, options);
+  } catch (e) {
+    if (e.cause && e.cause.code === "RequiredOption") {
+      logger.error(e.message);
+      command.help();
+    }
+    throw e;
+  }
   if (data.length === 0) {
     logger.warning("(empty result)");
     return;

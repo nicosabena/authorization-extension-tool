@@ -1,3 +1,14 @@
+import { logger } from "./logger.js";
+
+export function RequiredOptionError(option) {
+  return new Error(`The option ${logger.yellow(option)} is required`, {
+    cause: {
+      code: "RequiredOption",
+      option
+    }
+  });
+}
+
 const defaultSortLogic = (a, b) =>
   a.applicationId && b.applicationId
     ? a.applicationId.localeCompare(b.applicationId) || a.name.localeCompare(b.name)

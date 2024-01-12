@@ -20,6 +20,7 @@
     "export-to-csv": "^1.2. 1",
     "got": "^13.0.0",
     "ndjson": "^2.0.0",
-    "node-gzip": "^1.1.2"
+    "node-gzip": "^1.1.2",
+    "prompt-sync": "^4.2.0"
   }
 }

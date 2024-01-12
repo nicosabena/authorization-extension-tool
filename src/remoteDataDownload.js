@@ -1,10 +1,11 @@
-import { AuthenticationClient, ManagementClient } from "auth0";
+import { ManagementClient } from "auth0";
 import { writeFileSync } from "fs";
 import { logger } from "./logger.js";
 import got from "got";
 import nodegzip from "node-gzip";
 import { APPLICATIONS_FILENAME, AUTHORIZATION_EXTENSION_EXPORT_FILENAME } from "./constants.js";
 import { readAndValidateConfig } from "./config.js";
+import { AuthorizationExtensionClient } from "./AuthorizationExtensionClient.js";
 const { ungzip } = nodegzip;
 
 let managementClient;
@@ -85,30 +86,9 @@ async function downloadUsers(location) {
 }
 
 async function getAuthorizationExtensionExport() {
-  const {
-    TENANT_DOMAIN,
-    CLIENT_ID,
-    CLIENT_SECRET,
-    AUTHORIZATION_EXTENSION_API_TOKEN_AUDIENCE,
-    AUTHORIZATION_EXTENSION_API_URL
-  } = process.env;
-
-  const authenticationClient = new AuthenticationClient({
-    domain: TENANT_DOMAIN,
-    clientId: CLIENT_ID,
-    clientSecret: CLIENT_SECRET
-  });
+  const authorizationExtensionClient = new AuthorizationExtensionClient();
   logger.info("Obtaining configuration from the Authorization Extension");
-  const tokenResponse = (
-    await authenticationClient.oauth.clientCredentialsGrant({
-      audience: AUTHORIZATION_EXTENSION_API_TOKEN_AUDIENCE
-    })
-  ).data;
-  const accessToken = tokenResponse.access_token;
-  const configLocation = `${AUTHORIZATION_EXTENSION_API_URL}/configuration/export`;
-  const config = await got(configLocation, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  }).json();
+  const config = await authorizationExtensionClient.getConfiguration();
 
   // delete unneeded values
   delete config.configuration;

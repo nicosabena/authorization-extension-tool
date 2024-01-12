@@ -33,7 +33,7 @@ The tool relies on data exported from the tenant that has the Authorization Exte
 
 1. Create a M2M application in the tenant where the Authorization Extension is installed, and assign permissions for:
    1. Auth0 Management API: authorize the scopes `read:users` and `read:applications` so that the code can read users and applications.
-   2. `auth0-authorization-extension-api`: authorize the scope `read:configuration` so that the code can read the full configuration for the Authorization Extension.
+   2. `auth0-authorization-extension-api`: authorize the scope `read:configuration` so that the code can read the full configuration for the Authorization Extension, and `update:groups` if you want to delete inactive groups.
 
 2. In a working folder (e.g. `~/ae-tool-working-folder/{tenant}) create a `.env` file (using `.env.example` as a template) and configure the all the values.
    For `CLIENT_ID` and `CLIENT_SECRET`, use the values for the application created in step #1.
@@ -71,6 +71,8 @@ where `<report-name>` can be one of the following:
 - `groups-and-members`: a list of groups with all the members in it (*)
 - `users`: a list of users in the system
 - `groups-with-users-not-found`: a list of groups with users that are not present in the users export.
+- `groups-with-inactive-members`: a list of groups with users that have not logged in since the `--cutoff` date. 
+  The `--cutoff` option needs to be provided in the `yyyy-mm-dd` format.
 
 > (*) For reports where there's a one-to-many relationship (e.g. "roles" lists permissions for each role) use `--flat` to 
 > generate one row per combination.
@@ -96,4 +98,5 @@ ae-tool report groups-with-users-not-found --flat >groups-with-users-not-found.c
 ae-tool report groups-and-roles --flat >groups-and-roles-flat.csv
 ae-tool report groups-and-roles >groups-and-roles.csv
 ae-tool report permissions >permissions.csv
+ae-tool report groups-with-inactive-members --flat --cutoff 2023-10-01 >groups-with-inactive-members-flat.csv
 ```

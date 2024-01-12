@@ -2,8 +2,10 @@
 import { program, Command, Argument } from "commander";
 import { reportTypesList, generateReport } from "./src/reports.js";
 import { getRemoteData } from "./src/remoteDataDownload.js";
+import { removeInactiveGroupMembers } from "./src/removeInactiveGroupMembers.js";
 
 program
+  .showHelpAfterError()
   .addCommand(
     new Command("report")
       .addArgument(
@@ -12,6 +14,7 @@ program
       .description("Generates a report based on available data")
       .option("--flat", "Flattens results for one-to-many relationships")
       .option("--group <group-name>", "Optionally filter results to one specific group")
+      .option("--cutoff <yyyy-mm-dd>", "Cutoff date for inactive users")
       .action(generateReport)
   )
   .addCommand(
@@ -20,5 +23,12 @@ program
         "Downloads users, applications and Authorization Extension data for further processing"
       )
       .action(getRemoteData)
+  )
+  .addCommand(
+    new Command("remove-inactive-group-members")
+      .description("Removes all group members that have not log in since the cutoff date")
+      .action(removeInactiveGroupMembers)
+      .requiredOption("--cutoff <yyyy-mm-dd>", "Cutoff date for inactive users")
+      .option("--group <group-name>", "Optionally filter results to one specific group")
   );
 program.parseAsync();
