@@ -14,17 +14,17 @@ const defaultSortLogic = (a, b) =>
     ? a.applicationId.localeCompare(b.applicationId) || a.name.localeCompare(b.name)
     : a.name.localeCompare(b.name);
 
-const permissionsSortLogic = (a, b) => {
-  const [operationA, resourceA] = a.name.split(":");
-  const [operationB, resourceB] = b.name.split(":");
-  if (resourceA && resourceB) {
-    return (
-      a.applicationId.localeCompare(b.applicationId) ||
-      resourceA.localeCompare(resourceB) ||
-      operationA.localeCompare(operationB)
-    );
-  }
-  return defaultSortLogic(a, b);
+const normalizePermissionName = (name) => {
+  const [operationA, resourceA] = name.split(":");
+  return resourceA ? `${resourceA} - ` + operationA : name;
+}
+export const permissionsSortLogic = (a, b) => {
+  const normalizedNameA = normalizePermissionName(a.name);
+  const normalizedNameB = normalizePermissionName(b.name);
+  return (
+    a.applicationId.localeCompare(b.applicationId) ||
+    normalizedNameA.localeCompare(normalizedNameB)
+  );
 };
 
 export function sortData(data) {

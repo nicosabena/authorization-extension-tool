@@ -2,6 +2,7 @@ import { outputCsv } from "./csvOutput.js";
 import { getInactiveGroupsAndUsers } from "./inactiveUsers.js";
 import { initializeData } from "./initializeData.js";
 import { logger } from "./logger.js";
+import { permissionsSortLogic } from "./utils.js";
 
 function output(title, data) {
   outputCsv(title, data);
@@ -111,6 +112,12 @@ const Projections = {
     })),
   users: (user) => ({
     ...user
+  }),
+  groupsWithRolesAndPermissions: (group) => ({
+    group_name: group.name,
+    group_description: group.description,
+    all_roles: group.allRoles.map((role) => role.name).join(", "),
+    all_permissions: group.allPermissions.map((permission) => permission.name).join(", ")
   })
 };
 
@@ -203,6 +210,17 @@ const reportTypes = {
     projection: Projections.groupsWithInactiveMembers,
     flatProjection: Projections.groupsWithInactiveMembersFlat,
     data: getInactiveGroupsAndUsers
+  },
+  "groups-roles-permissions": {
+    description: "All groups, with their roles and combined permissions",
+    projection: Projections.groupsWithRolesAndPermissions,
+    data: ({ groups }, options) =>
+      groups.filter(options.groupFilter).map((group) => ({
+        ...group,
+        allPermissions: [
+          ...new Set(group.allRoles.flatMap((role) => role.permissions).sort(permissionsSortLogic))
+        ]
+      }))
   }
 };
 
