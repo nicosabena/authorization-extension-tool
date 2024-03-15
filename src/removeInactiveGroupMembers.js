@@ -1,4 +1,4 @@
-import { AuthorizationExtensionClient } from "./AuthorizationExtensionClient.js";
+import { getAuthorizationExtensionClient } from "./AuthorizationExtensionClient.js";
 import { readAndValidateConfig } from "./config.js";
 import { getInactiveGroupsAndUsers } from "./inactiveUsers.js";
 import { initializeData } from "./initializeData.js";
@@ -42,7 +42,7 @@ export async function removeInactiveGroupMembers(options) {
   logger.blankLine();
   writeFileSync(backupFileName, JSON.stringify(groups, null, 2));
 
-  const authorizationExtensionClient = new AuthorizationExtensionClient();
+  const authorizationExtensionClient = getAuthorizationExtensionClient();
   for (const group of groups) {
     logger.info(`Removing ${group.inactiveMembers.length} members from ${group.name}`);
     await authorizationExtensionClient.removeGroupMembers(group._id, group.inactiveMembers);

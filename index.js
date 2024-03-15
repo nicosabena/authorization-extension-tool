@@ -3,6 +3,10 @@ import { program, Command, Argument } from "commander";
 import { reportTypesList, generateReport } from "./src/reports.js";
 import { getRemoteData } from "./src/remoteDataDownload.js";
 import { removeInactiveGroupMembers } from "./src/removeInactiveGroupMembers.js";
+import { copyGroupMembers } from "./src/copyGroupMembers.js";
+import { readAndValidateConfig } from "./src/config.js";
+
+readAndValidateConfig();
 
 program
   .showHelpAfterError()
@@ -30,5 +34,13 @@ program
       .action(removeInactiveGroupMembers)
       .requiredOption("--cutoff <yyyy-mm-dd>", "Cutoff date for inactive users")
       .option("--group <group-name>", "Optionally filter results to one specific group")
+  )
+  .addCommand(
+    new Command("copy-group-members")
+      .description("Copies all direct members from a source group to a target group")
+      .action(copyGroupMembers)
+      .argument("<source-group>", "The source group name or id")
+      .argument("<target-group>", "The target group name or id")
+      .option("-y, --yes", "Skips confirmation prompt", false)
   );
 program.parseAsync();

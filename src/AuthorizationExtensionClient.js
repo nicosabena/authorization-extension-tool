@@ -6,21 +6,14 @@ export class AuthorizationExtensionClient {
   cachedToken;
   baseUrl;
   audience;
-  constructor() {
-    const {
-      TENANT_DOMAIN,
-      CLIENT_ID,
-      CLIENT_SECRET,
-      AUTHORIZATION_EXTENSION_API_TOKEN_AUDIENCE,
-      AUTHORIZATION_EXTENSION_API_URL
-    } = process.env;
+  constructor(options) {
     this.authenticationClient = new AuthenticationClient({
-      domain: TENANT_DOMAIN,
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET
+      domain: options.domain,
+      clientId: options.clientId,
+      clientSecret: options.clientSecret
     });
-    this.baseUrl = AUTHORIZATION_EXTENSION_API_URL;
-    this.audience = AUTHORIZATION_EXTENSION_API_TOKEN_AUDIENCE;
+    this.baseUrl = options.baseUrl;
+    this.audience = options.audience;
   }
   async getToken() {
     // naive implementation, does not check for expired tokens
@@ -57,4 +50,40 @@ export class AuthorizationExtensionClient {
       json: members
     });
   }
+  async getGroupMembers(groupId) {
+    return await this.request(`groups/${groupId}/members`);
+  }
+  async addGroupMembers(groupId, members) {
+    return await this.request(`groups/${groupId}/members`, {
+      method: "patch",
+      json: members
+    });
+  }
+  async getAllGroups() {
+    return await this.request(`groups`);
+  }
+  async getAllRoles() {
+    return await this.request("roles");
+  }
+}
+
+let defaultClient;
+export function getAuthorizationExtensionClient() {
+  if (!defaultClient) {
+    const {
+      TENANT_DOMAIN,
+      CLIENT_ID,
+      CLIENT_SECRET,
+      AUTHORIZATION_EXTENSION_API_TOKEN_AUDIENCE,
+      AUTHORIZATION_EXTENSION_API_URL
+    } = process.env;
+    defaultClient = new AuthorizationExtensionClient({
+      domain: TENANT_DOMAIN,
+      clientId: CLIENT_ID,
+      clientSecret: CLIENT_SECRET,
+      audience: AUTHORIZATION_EXTENSION_API_TOKEN_AUDIENCE,
+      baseUrl: AUTHORIZATION_EXTENSION_API_URL
+    });
+  }
+  return defaultClient;
 }

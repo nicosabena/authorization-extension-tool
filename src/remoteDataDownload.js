@@ -5,7 +5,7 @@ import got from "got";
 import nodegzip from "node-gzip";
 import { APPLICATIONS_FILENAME, AUTHORIZATION_EXTENSION_EXPORT_FILENAME } from "./constants.js";
 import { readAndValidateConfig } from "./config.js";
-import { AuthorizationExtensionClient } from "./AuthorizationExtensionClient.js";
+import { getAuthorizationExtensionClient } from "./AuthorizationExtensionClient.js";
 const { ungzip } = nodegzip;
 
 let managementClient;
@@ -86,7 +86,7 @@ async function downloadUsers(location) {
 }
 
 async function getAuthorizationExtensionExport() {
-  const authorizationExtensionClient = new AuthorizationExtensionClient();
+  const authorizationExtensionClient = getAuthorizationExtensionClient();
   logger.info("Obtaining configuration from the Authorization Extension");
   const config = await authorizationExtensionClient.getConfiguration();
 
