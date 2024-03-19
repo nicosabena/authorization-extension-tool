@@ -4,8 +4,12 @@ import { initializeData } from "./initializeData.js";
 import { logger } from "./logger.js";
 import { permissionsSortLogic } from "./utils.js";
 
-function output(title, data) {
-  outputCsv(title, data);
+function output(title, data, options) {
+  if (options.json) {
+    console.log(JSON.stringify(data, null, 2));
+  } else {
+    outputCsv(title, data);
+  }
 }
 
 function userInfo(member_id, usersMap) {
@@ -19,6 +23,11 @@ function userInfo(member_id, usersMap) {
     };
   }
   return {};
+}
+
+function emailFromUserId(userId, usersMap) {
+  const email = usersMap[userId]?.email;
+  return email || userId;
 }
 
 const Projections = {
@@ -73,6 +82,10 @@ const Projections = {
       is_direct_member: group.members.includes(member),
       member_id: member,
       ...userInfo(member, rawData.usersMap)
+    })),
+  groupsWithEmailsFlat: (group, rawData) =>
+    [... new Set(group.allMembers.map((member) => emailFromUserId(member, rawData.usersMap)))].map(email => ({
+      email
     })),
   groupsWithMissingMembers: (group) => ({
     ...Projections.groups(group),
@@ -179,6 +192,12 @@ const reportTypes = {
     data: ({ groups }, options) =>
       groups.filter(options.groupFilter).filter((group) => group.allMembers.length > 0)
   },
+  "groups-and-emails": {
+    description: "All members in a group listing only email addresses",
+    flatProjection: Projections.groupsWithEmailsFlat,
+    data: ({ groups }, options) =>
+      groups.filter(options.groupFilter).filter((group) => group.allMembers.length > 0)
+  },
   "nested-groups": {
     description: "groups with their nested groups",
     projection: Projections.groupsWithNestedGroups,
@@ -247,12 +266,12 @@ export async function generateReport(reportType, options = {}, command) {
     return;
   }
   const projection =
-    flat && report.flatProjection
+    flat && report.flatProjection || !report.projection
       ? data.flatMap((record) => report.flatProjection(record, rawData))
       : data.map((record) => report.projection(record, rawData));
   if (projection.length === 0) {
     logger.warning("(empty result)");
     return;
   }
-  output(report.description, projection);
+  output(report.description, projection, options);
 }

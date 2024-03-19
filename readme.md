@@ -56,7 +56,7 @@ These three files will be the input to generate the reports
 To generate a report, type:
 
 ```
-ae-tool report <report-name> [--flat]
+ae-tool report <report-name> [--flat] [--group <group-name>] [--json]
 ```
 
 where `<report-name>` can be one of the following:
@@ -73,9 +73,11 @@ where `<report-name>` can be one of the following:
 - `groups-with-users-not-found`: a list of groups with users that are not present in the users export.
 - `groups-with-inactive-members`: a list of groups with users that have not logged in since the `--cutoff` date. 
   The `--cutoff` option needs to be provided in the `yyyy-mm-dd` format.
+- `groups-and-emails`: a list of user emails in the group. Use combined with `--group` to specify the group name to filter. 
 
 > (*) For reports where there's a one-to-many relationship (e.g. "roles" lists permissions for each role) use `--flat` to 
 > generate one row per combination.
+
 
 You can get a list of report types by typing:
 
@@ -100,4 +102,26 @@ ae-tool report groups-and-roles >groups-and-roles.csv
 ae-tool report permissions >permissions.csv
 ae-tool report groups-with-inactive-members --flat --cutoff 2023-10-01 >groups-with-inactive-members-since-2023-10-01-flat.csv
 ae-tool report nested-groups --flat >nested-groups-flat.csv
+ae-tool report groups-and-emails --group "My user group"
+
 ```
+
+# Other commands
+
+## Copy group members
+
+Copy all group members from one group to another:
+
+```
+ae-tool copy-group-members <source-group> <target-group> [--confirm]
+```
+
+If your group name has spaces, use double quotes. E.g.:
+
+```
+ae-tool copy-group-members "my source group" "my target group"
+```
+
+`--confirm` skips the confirmation prompt.
+
+

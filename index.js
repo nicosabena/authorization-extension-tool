@@ -19,6 +19,7 @@ program
       .option("--flat", "Flattens results for one-to-many relationships")
       .option("--group <group-name>", "Optionally filter results to one specific group")
       .option("--cutoff <yyyy-mm-dd>", "Cutoff date for inactive users")
+      .option("--json", "Generates JSON output instead of CSV")
       .action(generateReport)
   )
   .addCommand(

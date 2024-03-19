@@ -1,4 +1,5 @@
 import { logger } from "./logger.js";
+const NOT_FOUND = "NOT_FOUND";
 
 export function RequiredOptionError(option) {
   return new Error(`The option ${logger.yellow(option)} is required`, {
