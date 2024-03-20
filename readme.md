@@ -122,6 +122,6 @@ If your group name has spaces, use double quotes. E.g.:
 ae-tool copy-group-members "my source group" "my target group"
 ```
 
-`--confirm` skips the confirmation prompt.
+`--yes` skips the confirmation prompt.
 
 

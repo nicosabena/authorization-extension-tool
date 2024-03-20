@@ -5,6 +5,7 @@ import { getRemoteData } from "./src/remoteDataDownload.js";
 import { removeInactiveGroupMembers } from "./src/removeInactiveGroupMembers.js";
 import { copyGroupMembers } from "./src/copyGroupMembers.js";
 import { readAndValidateConfig } from "./src/config.js";
+import { addGroupMapping } from "./src/addGroupMapping.js";
 
 readAndValidateConfig();
 
@@ -42,6 +43,15 @@ program
       .action(copyGroupMembers)
       .argument("<source-group>", "The source group name or id")
       .argument("<target-group>", "The target group name or id")
+      .option("-y, --yes", "Skips confirmation prompt", false)
+  )
+  .addCommand(
+    new Command("add-group-mapping")
+      .description("Creates a mapping for a group")
+      .action(addGroupMapping)
+      .argument("<group-name>", "The source group name or id to add the mapping")
+      .argument("<connection-name>", "The external connection name for the mapping")
+      .argument("<external-group-name>", "The group name as coming from the external connection")
       .option("-y, --yes", "Skips confirmation prompt", false)
   );
 program.parseAsync();

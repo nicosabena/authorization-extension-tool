@@ -65,6 +65,19 @@ export class AuthorizationExtensionClient {
   async getAllRoles() {
     return await this.request("roles");
   }
+  async getGroupMappings(groupId) {
+    return await this.request(`groups/${groupId}/mappings`);
+  }
+  async createGroupMapping(groupId, connectionName, groupName) {
+    return await this.request(`groups/${groupId}/mappings`, {
+      method: "patch",
+      json: [ {
+        groupName,
+        connectionName
+      }]
+    });
+  }
+
 }
 
 let defaultClient;
