@@ -84,8 +84,16 @@ const Projections = {
       ...userInfo(member, rawData.usersMap)
     })),
   groupsWithEmailsFlat: (group, rawData) =>
-    [... new Set(group.allMembers.map((member) => emailFromUserId(member, rawData.usersMap)))].map(email => ({
-      email
+    [...new Set(group.allMembers.map((member) => emailFromUserId(member, rawData.usersMap)))].map(
+      (email) => ({
+        email
+      })
+    ),
+  groupsWithMappingsFlat: (group) =>
+    group.mappings.map((mapping) => ({
+      group_name: group.name,
+      connection_name: mapping.connectionName,
+      external_group_name: mapping.groupName
     })),
   groupsWithMissingMembers: (group) => ({
     ...Projections.groups(group),
@@ -240,6 +248,12 @@ const reportTypes = {
           ...new Set(group.allRoles.flatMap((role) => role.permissions).sort(permissionsSortLogic))
         ]
       }))
+  },
+  "groups-and-mappings": {
+    description: "All groups that have a mapping from an external connection configured",
+    flatProjection: Projections.groupsWithMappingsFlat,
+    data: ({ groups }, options) =>
+      groups.filter(options.groupFilter).filter((group) => group.mappings?.length > 0)
   }
 };
 
