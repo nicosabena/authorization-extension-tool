@@ -6,6 +6,7 @@ import { removeInactiveGroupMembers } from "./src/removeInactiveGroupMembers.js"
 import { copyGroupMembers } from "./src/copyGroupMembers.js";
 import { readAndValidateConfig } from "./src/config.js";
 import { addGroupMapping } from "./src/addGroupMapping.js";
+import { removeAllGroupMembers } from "./src/removeAllGroupMembers.js";
 
 readAndValidateConfig();
 
@@ -52,6 +53,13 @@ program
       .argument("<group-name>", "The source group name or id to add the mapping")
       .argument("<connection-name>", "The external connection name for the mapping")
       .argument("<external-group-name>", "The group name as coming from the external connection")
+      .option("-y, --yes", "Skips confirmation prompt", false)
+  )
+  .addCommand(
+    new Command("remove-all-group-members")
+      .description("Removes all members of a group")
+      .action(removeAllGroupMembers)
+      .argument("<group-name>", "The group name")
       .option("-y, --yes", "Skips confirmation prompt", false)
   );
 program.parseAsync();

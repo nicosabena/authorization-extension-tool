@@ -59,6 +59,12 @@ export class AuthorizationExtensionClient {
       json: members
     });
   }
+  async removeGroupMembers(groupId, members) {
+    return await this.request(`groups/${groupId}/members`, {
+      method: "delete",
+      json: members
+    });
+  }
   async getAllGroups() {
     return await this.request(`groups`);
   }
@@ -71,13 +77,14 @@ export class AuthorizationExtensionClient {
   async createGroupMapping(groupId, connectionName, groupName) {
     return await this.request(`groups/${groupId}/mappings`, {
       method: "patch",
-      json: [ {
-        groupName,
-        connectionName
-      }]
+      json: [
+        {
+          groupName,
+          connectionName
+        }
+      ]
     });
   }
-
 }
 
 let defaultClient;
