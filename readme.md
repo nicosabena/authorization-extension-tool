@@ -113,13 +113,48 @@ ae-tool report groups-and-emails --group "My user group"
 Copy all group members from one group to another:
 
 ```
-ae-tool copy-group-members <source-group> <target-group> [--confirm]
+ae-tool copy-group-members <source-group> <target-group> [--yes]
 ```
 
 If your group name has spaces, use double quotes. E.g.:
 
 ```
 ae-tool copy-group-members "my source group" "my target group"
+```
+
+`--yes` skips the confirmation prompt.
+
+## Remove all group members
+
+Remove all group members from one group to another:
+
+```
+ae-tool remove-all-group-members <group-name> [--yes]
+```
+
+If your group name has spaces, use double quotes. E.g.:
+
+```
+ae-tool remove-all-group-memberss "my group"
+```
+
+`--yes` skips the confirmation prompt.
+
+## Add a group mapping
+
+Create a new mapping for a group membership from an external connection.
+
+```
+ae-tool add-group-name <source-group> <connection-name> <external-group-name> [--yes]
+```
+
+Adds a mapping so that if a user logs in with `<connection-name>` and the `groups` claim/attribute includes `<external-group-name>`,
+then the user is also considered a member of `source-group`.
+
+If your group name has spaces, use double quotes. E.g.:
+
+```
+ae-tool add-group-mapping "my group" enterprise-idp "Managers and Directors"
 ```
 
 `--yes` skips the confirmation prompt.
