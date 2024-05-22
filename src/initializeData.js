@@ -13,7 +13,7 @@ export async function initializeData() {
   const applications = await readFromFile(APPLICATIONS_FILENAME);
   rawData.applications = applications;
 
-  sortData(rawData);
   augmentData(rawData);
+  sortData(rawData);
   return rawData;
 }

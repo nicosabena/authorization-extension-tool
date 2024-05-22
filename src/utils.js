@@ -11,8 +11,8 @@ export function RequiredOptionError(option) {
 }
 
 const defaultSortLogic = (a, b) =>
-  a.applicationId && b.applicationId
-    ? a.applicationId.localeCompare(b.applicationId) || a.name.localeCompare(b.name)
+  a.applicationName && b.applicationName
+    ? a.applicationName.localeCompare(b.applicationName) || a.name.localeCompare(b.name)
     : a.name.localeCompare(b.name);
 
 const normalizePermissionName = (name) => {
@@ -23,7 +23,7 @@ export const permissionsSortLogic = (a, b) => {
   const normalizedNameA = normalizePermissionName(a.name);
   const normalizedNameB = normalizePermissionName(b.name);
   return (
-    a.applicationId.localeCompare(b.applicationId) ||
+    a.applicationName.localeCompare(b.applicationName) ||
     normalizedNameA.localeCompare(normalizedNameB)
   );
 };
